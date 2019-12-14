@@ -4,3 +4,10 @@
 
 # object files
 *.o
+
+# local tests
+testing
+
+# executable files
+fproc
+memtest
