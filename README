@@ -1,0 +1,56 @@
+*****************************************************************
+* FPROC - an interactive command-line processor for FASTA files *
+*****************************************************************
+
+1) Layers of abstraction
+=========================
+1.1) Individual sequences
+
+An individual sequence is stored as a struct `gene_seq_t',
+which is declared in <geneseq.h> as:
+
+struct gene_seq_t {
+       char *label;
+       char *sequence;
+
+       /* other fields */
+       char *strand;
+       long unsigned int min;
+       long unsigned int max;
+};
+
+The first two fields are completely general and must be filled
+for any valid FASTA file. If the FASTA file contains additional
+information in the deflines this may be stored in further fields,
+but the code to handle these is necessarily dependent on the
+convention used in the FASTA files.
+
+TO DO: replace other fields by a generic `metadata' field, for
+       ease of modification for other FASTA conventions.
+       Maybe store unmodified defline and define an interpretation
+       function for each convention?
+
+1.2) FASTA file
+
+An individual FASTA file is represented by a binary tree with a
+sequence associated to each leaf. Each leaf is represented internally
+by a struct `gene_node_t':
+
+struct gene_node_t {
+       struct gene_seq_t *gene_seq;
+       struct gene_node_t *right;
+       struct gene_node_t *left;
+};
+
+NOTE: `gene_node_t' could be defined to include all the fields of
+       gene_seq, 
+is performed by acting on a struct `gene_tree_t', defined in
+<genetree.h> as
+
+struct gene_tree_t {
+       char *filename;
+
+       unsigned int size;
+       struct gene_node_t *root;
+};
+

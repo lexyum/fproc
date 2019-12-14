@@ -1,0 +1,6 @@
+# emacs drafts
+*.c~
+*.h~
+
+# object files
+*.o
