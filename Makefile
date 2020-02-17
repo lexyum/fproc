@@ -22,7 +22,7 @@ CFLAGS = -Og -ggdb -I$(INCLUDE) -Wall -Wextra -pedantic -std=gnu99
 # Flags for linker
 LDFLAGS = 
 
-# Directory to install fproc in
+# Directory to install TARGET in
 BINDIR = ./
 
 #### End of configuration section ####

@@ -237,7 +237,8 @@ void fproc_delete_all(void)
 	}
 }
 
-/* static function definitions */
+/* Static function declarations */
+
 static int defsearch(const char *defline, const char *sequence, const char *string)
 {
 	char *match;

@@ -278,6 +278,9 @@ int main (void)
 		}
 	}
 
+	/* clear file buffer */
+	fproc_delete_all();
+
 	for (unsigned int i = 0; i < file_max; i++) {
 		free(file_array[i]);
 		file_array[i] = NULL;
