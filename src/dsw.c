@@ -2,7 +2,6 @@
    a binary search tree. */
 
 #include <stdlib.h>
-
 #include <genetree.h>
 
 static void rotate_right (struct gene_node_t *pivot);
@@ -21,6 +20,7 @@ size_t count_ground_leaves (struct gene_tree_t *gene_tree)
 	return (gene_tree->size + 1 - (1 << count));
 }
 
+/* `Unroll' tree into a right-sloping vine */
 void tree_to_vine (struct gene_tree_t *gene_tree)
 {
 	struct gene_node_t *curr_node = gene_tree->root;
@@ -33,6 +33,7 @@ void tree_to_vine (struct gene_tree_t *gene_tree)
 	}
 }
 
+/* 'Roll up' right-sloping vine into balanced binary tree */
  void vine_to_tree (struct gene_tree_t *gene_tree)
 {
 	size_t ground_leaves = count_ground_leaves(gene_tree);
@@ -91,8 +92,6 @@ void balance_tree (struct gene_tree_t *gene_tree)
  * 2) Swap A and B
  *
  * 3) Permute X, Y, Z
- *
- * Lots of shuffling of pointers, but no data is affected
  *
  */
 

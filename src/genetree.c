@@ -112,15 +112,7 @@ int gene_tree_insert (struct gene_tree_t *gene_tree,
 }
 
 /*
- * STATIC FUNCTION DECLARATIONS
- *
- * All functions that allocate, free, or otherwise modify a struct gene_node_t are declared static.
- * This is done for two main reasons:
- *
- * 1) 
- *
- * 2) Easier memory management
- *
+ * STATIC FUNCTION DEFINITIONS
  */
 
 static struct gene_node_t *init_gene_node (const char *defline, size_t defline_len, const char *sequence, size_t sequence_len)

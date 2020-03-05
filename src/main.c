@@ -18,14 +18,13 @@ void **file_array;
 
 void print_welcome (void)
 {
-	fputs("********************************************************************************\n" \
-	      "*                                                                              *\n" \
-	      "*                                                                              *\n" \
-	      "*                            fproc                                             *\n" \
-	      "*                                                                              *\n" \
-	      "*                                                                              *\n" \
-	      "*                                                                              *\n" \
-	      "********************************************************************************\n", stdout);
+
+	fputs("\n********************************************************************************\n" \
+	        "*                                                                              *\n" \
+	        "*                            fproc                                             *\n" \
+	        "*                                                                              *\n" \
+	        "*                                                                              *\n" \
+	        "********************************************************************************\n", stdout);
 	fputs("fproc v1.0\n", stdout);
 	fputs("Type `help' or `credits' for more information.\n", stdout);
 }
@@ -37,7 +36,7 @@ void print_help (void)
 	      "\tread FILE               read in and store contents of FILE\n"\
 	      "\tread-to FILE N          read in and store contents of FILE in buffer N, if free\n"
 	      "\tprint N                 print description lines from file N\n"\
-	      "\tprint-full N            print description lines and sequences from file N\n"\
+	      "\tprint-all N             print description lines and sequences from file N\n"\
 	      "\tlist                    print contents of file buffer\n"\
 	      "\twrite N FILE            write contents of file N to output file FILE\n"	\
 	      "\tmerge N1 N2             merge contents of file N1 into file N2\n"\
@@ -132,7 +131,7 @@ int main (void)
 			unsigned long int srcN;
 
 			if (infile == NULL) {
-				fputs("filename required\n", stdout);
+				fputs("file buffer no. required\n", stdout);
 			}
 			else if ((srcN = strtoul(infile, NULL, 10)) == 0) {
 				fprintf(stdout, "%s is not a valid buffer number\n", infile);
@@ -148,7 +147,7 @@ int main (void)
 			unsigned long int srcN;
 
 			if (infile == NULL) {
-				fputs("source file buffer required\n", stdout);
+				fputs("file buffer no. required\n", stdout);
 				fputs("usage: `print-all n'\n", stdout);
 			}
 			else if ((srcN = strtoul(infile, NULL, 10)) == 0) {

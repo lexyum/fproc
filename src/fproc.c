@@ -1,4 +1,4 @@
-/* fproc.c - wrappers for gene_tree functions in treeops.c 
+/* fproc.c - wrappers for functions in treeops.c 
  *
  * Currently, all functions return 0 on success and -1 on failure.
  * TO DO: implement proper error handler
@@ -30,7 +30,7 @@ extern void **file_array;
 static int defsearch(const char *defline, const char *sequence, const char *string);
 static int seqsearch(const char *defline, const char *sequence, const char *string);
 
-
+/* read from infile, construct tree, and store in FILE_ARRAY[n] */
 int fproc_read_n(const char *infile, const size_t destN)
 {
 	if (destN > file_max) {
@@ -56,13 +56,13 @@ int fproc_read_n(const char *infile, const size_t destN)
 		return 0;
 	}
 }
-		
+
+/* read from infile, construct tree, and store in next free node */
 int fproc_read(const char *infile)
 {
 	for (long unsigned int i = 0; i < file_max; i++) {
-		if (file_array[i] != NULL) {
+		if (file_array[i] != NULL)
 			continue;
-		}
 		else if ((file_array[i] = init_gene_tree(infile, strlen(infile))) == NULL) {
 			fprintf(stderr, "failed to initialise tree for file %s\n", infile);
 			return -1;
@@ -82,34 +82,33 @@ int fproc_read(const char *infile)
 	return -1;
 }
 
+/* print deflines from tree in FILE_ARRAY[n] */
 void fproc_print (const size_t srcN)
 {
-	if (srcN >= file_max) {
+	if (srcN >= file_max)
 		fprintf(stderr, "error: buffer number %lu is out of bounds\n", srcN + 1);
-	}
-	else if (file_array[srcN] == NULL) {
+	else if (file_array[srcN] == NULL)
 		fprintf(stdout, "could not print contents of buffer %lu: buffer is empty\n", srcN + 1);
-	}
 	else {
 		struct gene_tree_t *tmp = (struct gene_tree_t *)file_array[srcN];
 		print_tree(tmp->root, stdout);
 	}
 }
 
+/* print deflines and sequences from tree in FILE_ARRAY[n] */
 void fproc_print_all(const size_t srcN)
 {
-	if (srcN >= file_max) {
+	if (srcN >= file_max)
 		fprintf(stderr, "error: buffer number %lu is out of bounds\n", srcN + 1);
-	}
-	else if (file_array[srcN] == NULL) {
+	else if (file_array[srcN] == NULL)
 		fprintf(stdout, "could not print contents of buffer %lu: buffer is empty\n", srcN + 1);
-	}
 	else {
 		struct gene_tree_t *tmp = (struct gene_tree_t *)file_array[srcN];
 		print_tree_full(tmp->root, stdout);
 	}
 }
 
+/* list contents of FILE_ARRAY */
 void fproc_list(void)
 {
 	for (long unsigned int i = 0; i < file_max; i++) {
@@ -117,12 +116,12 @@ void fproc_list(void)
 			struct gene_tree_t *tmp = (struct gene_tree_t *)file_array[i];
 			fprintf(stdout, "%2lu: %-40s (%lu sequences)\n", i + 1, tmp->filename, tmp->size);
 		}
-		else {
+		else
 			fprintf(stdout, "%2lu: [FREE]\n", i + 1);
-		}
 	}
 }
 
+/* write contents of FILE_ARRAY[n] to outfile */
 int fproc_write(const size_t srcN, const char *outfile)
 {
 	if (srcN >= file_max) {
@@ -137,9 +136,8 @@ int fproc_write(const size_t srcN, const char *outfile)
 		return -1;
 	}
 
-	if (file_array[srcN] == NULL) {
+	if (file_array[srcN] == NULL)
 		fprintf(stdout, "could not write contents of buffer %lu: buffer is empty\n", srcN + 1);
-	}
 	else {
 		struct gene_tree_t *tmp = (struct gene_tree_t *)file_array[srcN];
 		print_tree_full(tmp->root, ofptr);
@@ -148,6 +146,7 @@ int fproc_write(const size_t srcN, const char *outfile)
 	return 0;
 }
 
+/* combine contents of FILE_ARRAY[srcN], FILE_ARRAY[destN], and rebalance resulting tree */
 int fproc_merge(const size_t srcN, const size_t destN)
 {
 
@@ -159,23 +158,20 @@ int fproc_merge(const size_t srcN, const size_t destN)
 		fprintf(stderr, "error: destination buffer number %lu is out of bounds\n", destN + 1);
 		return -1;
 	}
-	else if (srcN == destN) {
+	else if (srcN == destN)
 		return 0;
-	}
-	else if (file_array[srcN] == NULL) {
+	else if (file_array[srcN] == NULL)
 		fprintf(stdout, "buffer %lu is empty: nothing to do\n", srcN + 1);
-	}
-	else if (file_array[destN] == NULL) {
+	else if (file_array[destN] == NULL)
 		file_array[destN] = file_array[srcN];
-	}
-	else {
+	else
 		merge_tree((struct gene_tree_t *)file_array[srcN], (struct gene_tree_t *)file_array[destN]);
-	}
-	
+
 	file_array[srcN] = NULL;
 	return 0;
 }
 
+/* search deflines in FILE_ARRAY[srcN] for string */
 int fproc_search_defline(const size_t srcN, const char *string)
 {
 	if (srcN >= file_max) {
@@ -193,6 +189,7 @@ int fproc_search_defline(const size_t srcN, const char *string)
 
 }
 
+/* search sequences in FILE_ARRAY[srcN] for string */
 int fproc_search_sequence(const size_t srcN, const char *string)
 {
 	if (srcN >= file_max) {
@@ -210,6 +207,7 @@ int fproc_search_sequence(const size_t srcN, const char *string)
 
 }
 
+/* delete contents of FILE_ARRAY[srcN] */
 int fproc_delete(const size_t srcN)
 {
 	if (srcN >= file_max) {
@@ -217,9 +215,8 @@ int fproc_delete(const size_t srcN)
 		return -1;
 	}
 
-	if (file_array[srcN] == NULL) {
+	if (file_array[srcN] == NULL)
 		fprintf(stdout, "buffer %lu is empty: nothing to do\n", srcN + 1);
-	}
 	else {
 		free_gene_tree((struct gene_tree_t *)file_array[srcN]);
 		file_array[srcN] = NULL;
@@ -227,6 +224,7 @@ int fproc_delete(const size_t srcN)
 	return 0;
 }
 
+/* delete all stored files */
 void fproc_delete_all(void)
 {
 	for (long unsigned int i = 0; i < file_max; i++) {
@@ -244,32 +242,28 @@ static int defsearch(const char *defline, const char *sequence, const char *stri
 	char *match;
 	if ((match = strstr(defline, string)) != NULL) {
 		fputs("Match found:\n", stdout);
-		const char *tmp = defline;
-		while (tmp != match) {
+		
+		for (const char *tmp = defline; tmp != match; ++tmp) {
 			fputc(*tmp, stdout);
 		}
-		tmp += strlen(string);
-		fprintf(stdout, "\033[0;31m%s\033[0m%s\n", string, tmp);
+		fprintf(stdout, "\033[0;31m%s\033[0m%s\n", string, match + strlen(string));
 		return 1;
 	}
-	else {
+	else 
 		return 0;
-	}
 }
 static int seqsearch(const char *defline, const char *sequence, const char *string)
 {
 	char *match;
 	if ((match = strstr(sequence, string)) != NULL) {
-		const char *tmp = sequence;
-		while (tmp != match) {
+		fputs("Match found:\n", stdout);
+
+		for (const char *tmp = sequence; tmp != match; ++tmp) {
 			fputc(*tmp, stdout);
 		}
-		fprintf(stdout, "\033[0;31m%s\033[0m", string);
-		tmp += strlen(string);
-		fputs(tmp, stdout);
+		fprintf(stdout, "\033[0;31m%s\033[0m%s\n", string, match + strlen(string));
 		return 1;
 	}
-	else {
+	else
 		return 0;
-	}
 }

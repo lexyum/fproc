@@ -1,3 +1,4 @@
+/* treeops.c - binary tree operations */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -173,6 +174,7 @@ int merge_tree ( struct gene_tree_t *src_tree, struct gene_tree_t *dest_tree)
 	balance_tree(dest_tree);
 	return 0;
 }
+
 /* recursively print labels on binary tree */
 void print_tree (const struct gene_node_t *root, FILE *stream)
 {
@@ -193,6 +195,21 @@ void print_tree_full (const struct gene_node_t *root, FILE *stream)
 	}
 }
 
+int search_tree (const struct gene_node_t *root, const char *string,
+		 int (*search_fn)(const char *, const char *, const char *))
+{
+	int count = 0;
+	if (root != NULL) {
+		if ((*search_fn)(root->defline, root->sequence, string) == 1) {
+			++count;
+//			fprintf(stdout, "Match found: %s\n", root->defline);
+		}
+		count += search_tree(root->left, string, search_fn);
+		count += search_tree(root->right, string, search_fn);
+	}
+	return count;
+}
+
 /* operate recursively on binary tree nodes.
    NOTE: if contents are changed, tree may need rebalancing. */
 
@@ -205,21 +222,6 @@ void operate_tree (const struct gene_node_t *root,
 		operate_tree(root->left, node_op);
 		operate_tree(root->right, node_op);
 	}
-}
-
-int search_tree (const struct gene_node_t *root, const char *string,
-		 int (*search_fn)(const char *, const char *, const char *))
-{
-	int count = 0;
-	if (root != NULL) {
-		if ((*search_fn)(root->defline, root->sequence, string) == 1) {
-			++count;
-			fprintf(stdout, "Match found: %s\n", root->defline);
-		}
-		count += search_tree(root->left, string, search_fn);
-		count += search_tree(root->right, string, search_fn);
-	}
-	return count;
 }
 		
 		

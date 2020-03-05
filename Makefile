@@ -12,7 +12,6 @@ CC = gcc
 
 INCLUDE := include
 SRCDIR := src
-OBJDIR := obj
 
 LIBS =
 
@@ -27,29 +26,31 @@ BINDIR = ./
 
 #### End of configuration section ####
 
-SRCS :=  $(addprefix $(SRCDIR)/,main.c fproc.c genetree.c treeops.c dsw.c)
-OBJS :=  $(addprefix $(OBJDIR)/,main.o fproc.o genetree.o treeops.o dsw.o)
+SRC = $(wildcard $(SRCDIR)/*.c)
+OBJ = $(SRC:.c=.o)
+DEP = $(OBJ:.o=.d)
 
-$(TARGET): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+# Target rule
+$(TARGET): $(OBJ)
+	$(CC) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
 
-$(addprefix $(OBJDIR)/,%.o):$(addprefix $(SRCDIR)/,%.c)
-	$(CC) $(CFLAGS) -c $< -o $@
+-include $(DEP) # include C dependency files
 
-main.o: $(addprefix $(INCLUDE)/,fproc.h)
-fproc.o: $(addprefix $(INCLUDE)/,genetree.h treeops.h dsw.h)
-genetree.o: $(addprefix $(INCLUDE)/,genetree.h)
-treeops.o: $(addprefix $(INCLUDE)/,genetree.h dsw.h)
-dsw.o: $(addprefix $(INLUDE)/,genetree.h)
+# rule to generate dep files using C preprocessor
+%.d: %.c
+	@$(CPP) $(CFLAGS) $< -MM -MT $(@:.d=.o) >$@
+
+%.o: %.c, %.d
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(OBJ) $(DEP) $(TARGET) 
 
-# run with valgrind
-.PHONY: memtest
-memtest: fproc
-	echo -e '#!/bin/bash\n' \
-		'valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes' \
-		'./fproc' > ./memtest; \
-	chmod 755 memtest
+.PHONY: cleanobj
+cleanobj:
+	rm -f $(OBJ)
+
+.PHONY: cleandep
+cleandep:
+	rm -f $(DEP)
