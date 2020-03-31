@@ -1,13 +1,9 @@
 # emacs drafts
-*.c~
-*.h~
+*~
 
-# object files
+# object files and dependencies
 *.o
-
-# local tests
-testing
+*.d
 
 # executable files
 fproc
-memtest
