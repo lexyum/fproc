@@ -73,7 +73,7 @@ int main (void)
 
 		if (fgets(termbuf, BUF_MAX, stdin) == NULL) { 		/* read input, exiting on Ctrl-D */
 			fputc('\n', stdout);
-			exit(EXIT_SUCCESS);
+			break;
 		}
 		else if ((token = strtok(termbuf, " \t\n")) == NULL) {  /* get first command, prompting again if empty */
 			continue;
@@ -91,7 +91,7 @@ int main (void)
 		if (!strcmp(token, "quit") ||
 			 !strcmp(token, "exit") ||
 			 !strcmp(token, "q")) {
-			exit(EXIT_SUCCESS);
+		  break;
 		}
 		/* parse input */
 		else if (!strcmp(token, "read")) {

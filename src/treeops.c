@@ -9,12 +9,12 @@
 
 /* Populate initialised gene_tree.
    Return 0 on success, -1 on failure*/
-int fill_tree (struct gene_tree_t *gene_tree)
+int fill_tree (struct gene_tree *tree)
 {
 	FILE *ifptr;
 
-	if ((ifptr = fopen(gene_tree->filename, "r")) == NULL) {
-		fprintf(stderr, "unable to open file %s\n", gene_tree->filename);
+	if ((ifptr = fopen(tree->filename, "r")) == NULL) {
+		fprintf(stderr, "unable to open file %s\n", tree->filename);
 		return -1;
 	}
 
@@ -61,7 +61,7 @@ int fill_tree (struct gene_tree_t *gene_tree)
 			}
 		}
 		else {
-			if(gene_tree_insert(gene_tree, defline_buf, defline_len, sequence_buf, sequence_len) == -1) {
+			if(gene_tree_insert(tree, defline_buf, defline_len, sequence_buf, sequence_len) == -1) {
 				free(defline_buf);
 				defline_buf = NULL;
 				
@@ -85,7 +85,7 @@ int fill_tree (struct gene_tree_t *gene_tree)
 	return 0;
 }
 
-int merge_tree ( struct gene_tree_t *src_tree, struct gene_tree_t *dest_tree)
+int merge_tree ( struct gene_tree *src_tree, struct gene_tree *dest_tree)
 {
 	if (dest_tree->root == NULL) {
 		free_gene_tree(dest_tree);
@@ -103,8 +103,8 @@ int merge_tree ( struct gene_tree_t *src_tree, struct gene_tree_t *dest_tree)
 	do { /* while (src_tree->root != NULL) */
 		int nodecmp;
 
-		struct gene_node_t *curr_node = dest_tree->root;
-		struct gene_node_t *prev_node = NULL;
+		struct gene_node *curr_node = dest_tree->root;
+		struct gene_node *prev_node = NULL;
 
 		do { /* while (curr_node != NULL) */
 
@@ -124,7 +124,7 @@ int merge_tree ( struct gene_tree_t *src_tree, struct gene_tree_t *dest_tree)
 
 		if (nodecmp == 0) {
 			/* src_node is already in dest_tree - pop off src_tree and free */
-			struct gene_node_t *old_head = src_tree->root;
+			struct gene_node *old_head = src_tree->root;
 			
 			src_tree->root = src_tree->root->right;
 			--(src_tree->size);
@@ -176,7 +176,7 @@ int merge_tree ( struct gene_tree_t *src_tree, struct gene_tree_t *dest_tree)
 }
 
 /* recursively print labels on binary tree */
-void print_tree (const struct gene_node_t *root, FILE *stream)
+void print_tree (const struct gene_node *root, FILE *stream)
 {
 	if (root != NULL) {
 		fprintf(stream, ">%s\n", root->defline);
@@ -186,7 +186,7 @@ void print_tree (const struct gene_node_t *root, FILE *stream)
 }
 
 /* recursively print full contents of binary tree */
-void print_tree_full (const struct gene_node_t *root, FILE *stream)
+void print_tree_full (const struct gene_node *root, FILE *stream)
 {
 	if (root != NULL) {
 		fprintf(stream, ">%s%s", root->defline, root->sequence);
@@ -195,7 +195,7 @@ void print_tree_full (const struct gene_node_t *root, FILE *stream)
 	}
 }
 
-int search_tree (const struct gene_node_t *root, const char *string,
+int search_tree (const struct gene_node *root, const char *string,
 		 int (*search_fn)(const char *, const char *, const char *))
 {
 	int count = 0;
@@ -213,7 +213,7 @@ int search_tree (const struct gene_node_t *root, const char *string,
 /* operate recursively on binary tree nodes.
    NOTE: if contents are changed, tree may need rebalancing. */
 
-void operate_tree (const struct gene_node_t *root,
+void operate_tree (const struct gene_node *root,
 		   void (*node_op)(char *, char *))
 {
 

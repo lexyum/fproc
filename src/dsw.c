@@ -4,26 +4,26 @@
 #include <stdlib.h>
 #include <genetree.h>
 
-static void rotate_right (struct gene_node_t *pivot);
-static void rotate_left (struct gene_node_t *pivot);
+static void rotate_right (struct gene_node *pivot);
+static void rotate_left (struct gene_node *pivot);
 
-size_t count_ground_leaves (struct gene_tree_t *gene_tree)
+size_t count_ground_leaves (struct gene_tree *tree)
 {
 	
-	size_t tmp = (gene_tree->size) + 1;
+	size_t tmp = (tree->size) + 1;
 	int count = 0;
 	
 	while ((tmp >>= 1) != 0) {
 		++count;
 	}
 
-	return (gene_tree->size + 1 - (1 << count));
+	return (tree->size + 1 - (1 << count));
 }
 
 /* `Unroll' tree into a right-sloping vine */
-void tree_to_vine (struct gene_tree_t *gene_tree)
+void tree_to_vine (struct gene_tree *tree)
 {
-	struct gene_node_t *curr_node = gene_tree->root;
+	struct gene_node *curr_node = tree->root;
 
 	while (curr_node != NULL) {
 		while (curr_node->left != NULL) {
@@ -34,11 +34,11 @@ void tree_to_vine (struct gene_tree_t *gene_tree)
 }
 
 /* 'Roll up' right-sloping vine into balanced binary tree */
- void vine_to_tree (struct gene_tree_t *gene_tree)
+ void vine_to_tree (struct gene_tree *tree)
 {
-	size_t ground_leaves = count_ground_leaves(gene_tree);
+	size_t ground_leaves = count_ground_leaves(tree);
 
-	struct gene_node_t *curr_node = gene_tree->root;
+	struct gene_node *curr_node = tree->root;
 
 	/* rotate left on odd elements until we have lowest level. */
 	for (size_t i = 0; i < ground_leaves; i++) {
@@ -46,10 +46,10 @@ void tree_to_vine (struct gene_tree_t *gene_tree)
 		curr_node = curr_node->right; /* skip even elements */
 	}
 
-	size_t vine_len = (gene_tree->size) - ground_leaves - 1;
+	size_t vine_len = (tree->size) - ground_leaves - 1;
 
 	for (size_t i = vine_len/2; i > 0; i = vine_len/2) {
-		curr_node = gene_tree->root;
+		curr_node = tree->root;
 		for (size_t j = 0; j < i; j++) {
 			rotate_left(curr_node);
 			curr_node = curr_node->right;
@@ -58,14 +58,14 @@ void tree_to_vine (struct gene_tree_t *gene_tree)
 	}
 }
 
-void balance_tree (struct gene_tree_t *gene_tree)
+void balance_tree (struct gene_tree *tree)
 {
-	if (gene_tree->root == NULL) {
+	if (tree->root == NULL) {
 		return;
 	}
 
-	tree_to_vine(gene_tree);
-	vine_to_tree(gene_tree);
+	tree_to_vine(tree);
+	vine_to_tree(tree);
 }
 
 /********************
@@ -95,10 +95,10 @@ void balance_tree (struct gene_tree_t *gene_tree)
  *
  */
 
-static void rotate_right (struct gene_node_t *pivot)
+static void rotate_right (struct gene_node *pivot)
 {
 	/* step 1 */
-	struct gene_node_t *node_tmp = pivot->left;
+	struct gene_node *node_tmp = pivot->left;
 	pivot->left = pivot->right;
 	pivot->right = node_tmp;
 
@@ -118,10 +118,10 @@ static void rotate_right (struct gene_node_t *pivot)
 	pivot->right->right = node_tmp;
 }
 
-static void rotate_left (struct gene_node_t *pivot)
+static void rotate_left (struct gene_node *pivot)
 {
 		/* step 1 */
-	struct gene_node_t *node_tmp = pivot->right;
+	struct gene_node *node_tmp = pivot->right;
 	pivot->right = pivot->left;
 	pivot->left = node_tmp;
 

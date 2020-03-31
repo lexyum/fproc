@@ -43,9 +43,9 @@ $(TARGET): $(OBJ)
 %.o: %.c, %.d
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-.PHONY: clean
+.PHONY: 
 clean:
-	rm -f $(OBJ) $(DEP) $(TARGET) 
+	rm -f $(OBJ) $(DEP) 
 
 .PHONY: cleanobj
 cleanobj:
