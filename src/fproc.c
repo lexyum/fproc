@@ -46,7 +46,6 @@ int fproc_read_n(const char *infile, const size_t destN)
 		return -1;
 	}
 	else if (fill_tree((struct gene_tree *)file_array[destN]) == -1) {
-		fprintf(stderr, "failed to fill tree for file %s\n", infile);
 		free_gene_tree((struct gene_tree *)file_array[destN]);
 		file_array[destN] = NULL;
 		return -1;
@@ -68,7 +67,6 @@ int fproc_read(const char *infile)
 			return -1;
 		}
 		else if (fill_tree((struct gene_tree *)file_array[i]) == -1) {
-			fprintf(stderr, "failed to fill tree for file %s\n", infile);
 			free_gene_tree((struct gene_tree *)file_array[i]);
 			file_array[i] = NULL;
 			return -1;
