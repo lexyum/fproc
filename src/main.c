@@ -13,9 +13,6 @@
 
 #define BUF_MAX 80
 
-size_t file_max = 10;
-void **file_array;
-
 void print_welcome (void)
 {
 
@@ -58,12 +55,6 @@ void print_credits (void)
 int main (void)
 {
 	print_welcome();
-		
-	/* startup: initialise file_array */
-	if ((file_array =  calloc(file_max, sizeof(void *))) == NULL) {
-		printf("failed to initialise file array, exiting.\n");
-		exit(EXIT_FAILURE);
-	}
 
 	char termbuf[BUF_MAX];
 	char *token;
@@ -279,12 +270,6 @@ int main (void)
 
 	/* clear file buffer */
 	fproc_delete_all();
-
-	for (unsigned int i = 0; i < file_max; i++) {
-		free(file_array[i]);
-		file_array[i] = NULL;
-	}
-	free(file_array);
 
 	exit(EXIT_SUCCESS);
 }
