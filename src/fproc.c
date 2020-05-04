@@ -36,8 +36,8 @@ int fproc_read_n(const char *infile, const size_t destN)
 		fprintf(stderr, "failed to initialise tree for file %s\n", infile);
 		return -1;
 	}
-	else if (fill_tree((struct gene_tree *)file_list[destN]) == -1) {
-		free_gene_tree((struct gene_tree *)file_list[destN]);
+	else if (fill_tree(file_list[destN]) == -1) {
+		free_gene_tree(file_list[destN]);
 		file_list[destN] = NULL;
 		return -1;
 	}
@@ -57,8 +57,8 @@ int fproc_read(const char *infile)
 			fprintf(stderr, "failed to initialise tree for file %s\n", infile);
 			return -1;
 		}
-		else if (fill_tree((struct gene_tree *)file_list[i]) == -1) {
-			free_gene_tree((struct gene_tree *)file_list[i]);
+		else if (fill_tree(file_list[i]) == -1) {
+			free_gene_tree(file_list[i]);
 			file_list[i] = NULL;
 			return -1;
 		}
@@ -79,7 +79,7 @@ void fproc_print (const size_t srcN)
 	else if (file_list[srcN] == NULL)
 		fprintf(stdout, "could not print contents of buffer %lu: buffer is empty\n", srcN + 1);
 	else {
-		struct gene_tree *tmp = (struct gene_tree *)file_list[srcN];
+		struct gene_tree *tmp = file_list[srcN];
 		print_tree(tmp->root, stdout);
 	}
 }
@@ -92,7 +92,7 @@ void fproc_print_all(const size_t srcN)
 	else if (file_list[srcN] == NULL)
 		fprintf(stdout, "could not print contents of buffer %lu: buffer is empty\n", srcN + 1);
 	else {
-		struct gene_tree *tmp = (struct gene_tree *)file_list[srcN];
+		struct gene_tree *tmp = file_list[srcN];
 		print_tree_full(tmp->root, stdout);
 	}
 }
@@ -102,7 +102,7 @@ void fproc_list(void)
 {
 	for (long unsigned int i = 0; i < FILE_MAX; i++) {
 		if (file_list[i] != NULL) {
-			struct gene_tree *tmp = (struct gene_tree *)file_list[i];
+			struct gene_tree *tmp = file_list[i];
 			fprintf(stdout, "%2lu: %-40s (%lu sequences)\n", i + 1, tmp->filename, tmp->size);
 		}
 		else
@@ -128,7 +128,7 @@ int fproc_write(const size_t srcN, const char *outfile)
 	if (file_list[srcN] == NULL)
 		fprintf(stdout, "could not write contents of buffer %lu: buffer is empty\n", srcN + 1);
 	else {
-		struct gene_tree *tmp = (struct gene_tree *)file_list[srcN];
+		struct gene_tree *tmp = file_list[srcN];
 		print_tree_full(tmp->root, ofptr);
 	}
 	fclose(ofptr);
@@ -154,7 +154,7 @@ int fproc_merge(const size_t srcN, const size_t destN)
 	else if (file_list[destN] == NULL)
 		file_list[destN] = file_list[srcN];
 	else
-		merge_tree((struct gene_tree *)file_list[srcN], (struct gene_tree *)file_list[destN]);
+		merge_tree(file_list[srcN], file_list[destN]);
 
 	file_list[srcN] = NULL;
 	return 0;
@@ -172,7 +172,7 @@ int fproc_search_defline(const size_t srcN, const char *string)
 		return 0;
 	}
 	else {
-		struct gene_tree *tmp = (struct gene_tree *)file_list[srcN];
+		struct gene_tree *tmp = file_list[srcN];
 		return search_tree(tmp->root, string, &defsearch);
 	}
 
@@ -190,7 +190,7 @@ int fproc_search_sequence(const size_t srcN, const char *string)
 		return 0;
 	}
 	else {
-		struct gene_tree *tmp = (struct gene_tree *)file_list[srcN];
+		struct gene_tree *tmp = file_list[srcN];
 		return search_tree(tmp->root, string, &seqsearch);
 	}
 
@@ -207,7 +207,7 @@ int fproc_delete(const size_t srcN)
 	if (file_list[srcN] == NULL)
 		fprintf(stdout, "buffer %lu is empty: nothing to do\n", srcN + 1);
 	else {
-		free_gene_tree((struct gene_tree *)file_list[srcN]);
+		free_gene_tree(file_list[srcN]);
 		file_list[srcN] = NULL;
 	}
 	return 0;
@@ -218,7 +218,7 @@ void fproc_delete_all(void)
 {
 	for (long unsigned int i = 0; i < FILE_MAX; i++) {
 		if (file_list[i] != NULL) {
-			free_gene_tree((struct gene_tree *)file_list[i]);
+			free_gene_tree(file_list[i]);
 			file_list[i] = NULL;
 		}
 	}
